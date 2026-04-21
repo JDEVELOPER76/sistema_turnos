@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control - Gestión de Citas</title>
+    <link rel="stylesheet" href="/static/styles/dashboard.css">
+</head>
+<body>
+    <header class="dash-header">
+        <div class="header-left">
+            <h1>Panel de Control</h1>
+        </div>
+        <div class="header-right">
+            <span class="user-greeting">Hola, {{ nombre }}</span>
+            <a href="/login" class="btn btn-outline">Cerrar sesión</a>
+        </div>
+    </header>
+
+    <main class="dash-container">
+        <div id="liveAlert" class="alert" style="display: none; margin-bottom: 1.5rem;"></div>
+
+        <section class="stats-grid">
+            <div class="stat-card">
+                <h3>Citas Totales</h3>
+                <p class="stat-value" id="totalCitasCount">{{ cantidad_citas }}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Mes Actual</h3>
+                <p class="stat-date">{{ mes_actual }}</p>
+            </div>
+        </section>
+
+        <div class="dash-grid">
+            <section class="panel schedule-panel">
+                <h2>📅 Agendar Nueva Cita</h2>
+                <form id="appointmentForm" class="schedule-form">
+                    <div class="input-group">
+                        <label for="sched-date">Fecha</label>
+                        <input type="date" id="sched-date" name="fecha" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="sched-time">Hora</label>
+                        <input type="time" id="sched-time" name="hora" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="sched-notes">Notas (Opcional)</label>
+                        <textarea id="sched-notes" name="notas" rows="3" placeholder="Detalles adicionales sobre la cita..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Guardar Cita</button>
+                </form>
+            </section>
+
+            <section class="panel calendar-panel">
+                <h2>🗓️ Disponibilidad</h2>
+                <div class="calendar-wrapper">
+                    <div class="calendar-weekdays">
+                        {% for dia in dias_semana %}
+                            <span>{{ dia }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="calendar-grid" id="dashboardCalendar">
+                        {% for celda in calendario_mensual %}
+                            {% if celda.vacio %}
+                                <div class="calendar-cell empty"></div>
+                            {% else %}
+                                <div class="calendar-cell {{ celda.estado }}" 
+                                     data-date="{{ celda.fecha }}" 
+                                     data-dia="{{ celda.dia }}">
+                                    <span class="day-number">{{ celda.dia }}</span>
+                                    <span class="day-status">
+                                        {% if celda.estado == "disponible" %}Disponible
+                                        {% elif celda.estado == "bloqueado" %}No disponible
+                                        {% else %}{{ celda.citas }} cita(s)
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <div class="modal-overlay" id="dayModal">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <h3 id="modalTitle">Detalles del día</h3>
+            <div class="modal-citas-list" id="modalCitasList"></div>
+        </div>
+    </div>
+
+    <script id="calendar-data" type="application/json">
+        {{ calendario_mensual | tojson | safe }}
+    </script>
+    <script id="citas-mes-data" type="application/json">
+        {{ citas_mes | tojson | safe }}
+    </script>
+
+    <script src="/static/js/dashboard.js"></script>
+</body>
+</html>

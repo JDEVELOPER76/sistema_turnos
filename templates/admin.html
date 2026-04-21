@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin</title>
+    <link rel="stylesheet" href="/static/styles/admin.css">
+</head>
+<body>
+    <header class="admin-header">
+        <h1>🛡️ Panel de Administración</h1>
+        <div class="header-right">
+            <span class="admin-badge">Administrador</span>
+            <a href="/login" class="btn btn-outline">Cerrar sesión</a>
+        </div>
+    </header>
+
+    <main class="admin-container">
+        <!-- Estadísticas Rápidas -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <h3>Usuarios Registrados</h3>
+                <p class="stat-value">{{ total_usuarios | default(0) }}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Citas</h3>
+                <p class="stat-value">{{ total_citas | default(0) }}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Días Bloqueados</h3>
+                <p class="stat-value">{{ dias_bloqueados_count | default(0) }}</p>
+            </div>
+        </section>
+
+        <!-- Listas: Usuarios y Citas -->
+        <div class="admin-grid">
+            <section class="panel users-panel">
+                <h2>👥 Usuarios</h2>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>ID</th><th>Usuario</th><th>Acciones</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for u in usuarios %}
+                            <tr>
+                                <td>{{ u.id }}</td>
+                                <td>{{ u.username }}</td>
+                                <td>
+                                    <form action="/admin/delete_user" method="POST" style="display:inline;">
+                                        <input type="hidden" name="username" value="{{ u.username }}">
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar usuario?')">Eliminar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="panel appointments-panel">
+                <h2>📋 Todas las Citas</h2>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Usuario</th>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Notas</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for c in citas_todas %}
+                            <tr>
+                                <td>{{ c.id }}</td>
+                                <td>{{ c.nombre if c.nombre else "N/A" }}</td>
+                                <td>{{ c.fecha }}</td>
+                                <td>{{ c.hora }}</td>
+                                <td>{{ c.notas or "-" }}</td>
+                                <td>
+                                    <span class="status {{ c.estado | default('confirmado') }}">
+                                        {{ c.estado | default('confirmado') }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <!-- Calendario Admin -->
+        <section class="panel calendar-admin-panel">
+            <h2>🗓️ Disponibilidad ({{ mes_actual }})</h2>
+            <p class="hint">Haz clic en un día para alternar entre <span class="color-green">disponible</span> y <span class="color-red">bloqueado</span>. Los días con citas ya agendadas aparecen atenuados. Haz clic en un día con citas para ver detalles.</p>
+            <div class="calendar-wrapper">
+                <div class="calendar-weekdays">
+                    {% for dia in dias_semana %}{{ dia }}{% endfor %}
+                </div>
+                <div class="calendar-grid" id="adminCalendar">
+                    {% for celda in calendario_mensual %}
+                        {% if celda.vacio %}
+                            <div class="calendar-cell empty"></div>
+                        {% else %}
+                               <div class="calendar-cell {{ celda.estado }}"
+                                   data-date="{{ celda.fecha }}"
+                                   data-dia="{{ celda.dia }}"
+                                   data-ocupado="{{ 'true' if celda.estado == 'ocupado' else 'false' }}">
+                                <span class="day-number">{{ celda.dia }}</span>
+                                <span class="day-status">
+                                    {% if celda.estado == "bloqueado" %}Bloqueado
+                                    {% elif celda.estado == "disponible" %}Disponible
+                                    {% else %}{{ celda.citas }} cita(s)
+                                    {% endif %}
+                                </span>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        <!-- Configuración de Citas -->
+        <section class="panel config-panel">
+            <h2>⚙️ Configuración de Citas</h2>
+            <form id="configForm" method="POST" action="/admin/config" style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end;">
+                <div class="form-group">
+                    <label for="duracion_cita">Duración de Cita (minutos)</label>
+                    <input type="number" id="duracion_cita" name="duracion" min="15" step="5" value="{{ duracion_cita | default(30) }}">
+                    <small>Mínimo 15 minutos</small>
+                </div>
+                <div class="form-group">
+                    <label for="intervalo_minimo">Intervalo Mínimo entre Citas (minutos)</label>
+                    <input type="number" id="intervalo_minimo" name="intervalo" min="0" step="5" value="{{ intervalo_minimo | default(30) }}">
+                    <small>Espacio entre citas consecutivas</small>
+                </div>
+                <button type="submit" class="btn btn-primary">Guardar Configuración</button>
+            </form>
+            <div id="configMessage" style="margin-top: 15px; display: none; padding: 10px; border-radius: 4px;"></div>
+        </section>
+    </main>
+
+    <!-- 🪟 Mini Ventana Modal para ver citas -->
+    <div class="modal-overlay" id="dayModal">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <h3 id="modalTitle">Citas del día</h3>
+            <div class="modal-citas-list" id="modalCitasList"></div>
+        </div>
+    </div>
+
+    <script id="calendar-data" type="application/json">
+        {{ calendario_mensual | tojson | safe }}
+    </script>
+    <script src="/static/js/admin.js"></script>
+</body>
+</html>

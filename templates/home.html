@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>TurnoEase | Gestión de Turnos</title>
+    <!-- Fuente moderna y elegante: Inter + sistema -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 (íconos sutiles) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="/static/styles/home.css">
+</head>
+<body>
+
+<div class="container">
+    <!-- Header con botón de Iniciar Sesión arriba (llama a /login) -->
+    <header class="navbar">
+        <div class="logo-area">
+            <div class="logo-icon">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+            <div>
+                <span class="logo-text">TurnoEase</span>
+                <span class="logo-sub">· turnos ágiles</span>
+            </div>
+        </div>
+        <!-- Botón de Inicio de Sesión destacado arriba -->
+        <button class="btn-login" id="loginBtnHeader">
+            <i class="fas fa-arrow-right-to-bracket"></i> Iniciar Sesión
+        </button>
+    </header>
+
+    <!-- Sección principal Hero -->
+    <section class="hero">
+        <div class="hero-content">
+            <span class="hero-badge"><i class="fas fa-clock"></i> Sin esperas · 100% online</span>
+            <h1>Agenda turnos de forma <span class="hero-highlight">simple y elegante</span></h1>
+            <p class="hero-description">
+                Gestiona citas médicas, asesorías o servicios profesionales. 
+                Rápido, intuitivo y con recordatorios automáticos.
+            </p>
+            <div class="cta-group">
+                <button class="btn-primary" id="ctaReservar"><i class="fas fa-calendar-plus"></i> Reservar turno</button>
+                <button class="btn-outline" id="btnExplorar"><i class="fas fa-info-circle"></i> Cómo funciona</button>
+            </div>
+        </div>
+        <div class="hero-image">
+            <div class="mock-calendar">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 240'%3E%3Crect width='320' height='240' fill='%23f4f9f5' rx='24'/%3E%3Ctext x='40' y='60' font-family='Arial' font-size='14' fill='%232d6a4f'%3E📅 Pruebalo Hoy%3C/text%3E%3Crect x='40' y='80' width='100' height='32' rx='16' fill='%23e0efe6'/%3E%3Ctext x='55' y='101' font-size='12' fill='%231f543d'%3E10:00 AM%3C/text%3E%3Crect x='160' y='80' width='100' height='32' rx='16' fill='%23ffffff' stroke='%23cbdcd0'/%3E%3Ctext x='175' y='101' font-size='12' fill='%234b5e52'%3E11:30 AM%3C/text%3E%3Crect x='40' y='130' width='100' height='32' rx='16' fill='%23ffffff' stroke='%23cbdcd0'/%3E%3Ctext x='55' y='151' font-size='12' fill='%234b5e52'%3E12:15 PM%3C/text%3E%3Crect x='160' y='130' width='100' height='32' rx='16' fill='%23d9eade'/%3E%3Ctext x='175' y='151' font-size='12' fill='%231f543d'%3E02:00 PM%3C/text%3E%3C/svg%3E" alt="Demo calendario de turnos" style="width:100%; border-radius: 24px;">
+            </div>
+        </div>
+    </section>
+
+    <!-- Características / Beneficios -->
+    <div class="features">
+        <div class="section-title">
+            <h2>Todo lo que necesitas</h2>
+            <p>Organización fluida, recordatorios y gestión inteligente</p>
+        </div>
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-calendar-week"></i></div>
+                <h3>Turnos en tiempo real</h3>
+                <p>Disponibilidad actualizada al instante. Sin dobles reservas ni conflictos.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-bell"></i></div>
+                <h3>Recordatorios automáticos</h3>
+                <p>Email y notificaciones para que nunca olvides una cita importante.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-chart-line"></i></div>
+                <h3>Panel de control</h3>
+                <p>Visualiza estadísticas y gestiona tu agenda con métricas claras.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pasos simples: cómo funciona -->
+    <div class="steps" id="comoFuncionaSection">
+        <div class="section-title" style="margin-bottom: 0.5rem;">
+            <h2>Cómo funciona TurnoEase</h2>
+            <p>En tres pasos simples, obtén tu turno</p>
+        </div>
+        <div class="steps-flex">
+            <div class="step-item"><div class="step-number">1</div><h4>Elige servicio</h4><p>Selecciona el tipo de turno y profesional</p></div>
+            <div class="step-item"><div class="step-number">2</div><h4>Fecha y hora</h4><p>Elige el horario disponible que prefieras</p></div>
+            <div class="step-item"><div class="step-number">3</div><h4>Confirmar y recibir</h4><p>Ingresa tus datos y recibe comprobante</p></div>
+        </div>
+        <div style="text-align: center; margin-top: 2rem;">
+            <button class="btn-primary" id="btnReservarAbajo" style="background:#1f543d;"><i class="fas fa-check-circle"></i> Comenzar ahora</button>
+        </div>
+    </div>
+</div>
+
+<!-- Footer elegante -->
+<footer class="container">
+    <div class="footer">
+        <span>© 2025 TurnoEase — Gestión moderna de turnos</span>
+        <span><i class="fas fa-envelope"></i> soporte@turnoease.com  |  <i class="fas fa-shield-alt"></i> Privacidad</span>
+    </div>
+</footer>
+
+<script src="/static/js/home.js?v=1"></script>
+</body>
+</html>
